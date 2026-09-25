@@ -1,22 +1,23 @@
-package kz.studentjobs;
+package kz.studentjobs.domain;
 
-public class ApplicationPolicy {
+public class ApplicationTransitionRule implements ApplicationRule {
 
-    public ApplicationStatus move(
-            ApplicationStatus from,
-            ApplicationStatus to
-    ) {
+    @Override
+    public void check(ApplicationStatus from, ApplicationStatus to) {
 
         if (from == ApplicationStatus.DRAFT
                 && to == ApplicationStatus.SUBMITTED) {
-
-            return to;
+            return;
         }
 
         if (from == ApplicationStatus.SUBMITTED
                 && to == ApplicationStatus.APPROVED) {
+            return;
+        }
 
-            return to;
+        if (from == ApplicationStatus.APPROVED
+                && to == ApplicationStatus.DRAFT) {
+            return;
         }
 
         throw new IllegalStateException(
