@@ -1,4 +1,4 @@
-package kz.studentjobs;
+package kz.studentjobs.domain;
 
 public enum ApplicationStatus {
     DRAFT,

@@ -1,15 +1,23 @@
-package kz.studentjobs;
+package kz.studentjobs.domain;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ApplicationPolicyTest {
 
-    private final ApplicationPolicy policy = new ApplicationPolicy();
+    private final ApplicationPolicy policy =
+            new ApplicationPolicy(
+                    List.of(
+                            new ApprovedApplicationCannotReturnToDraftRule(),
+                            new ApplicationTransitionRule()
+                    )
+            );
 
     @ParameterizedTest
     @CsvSource({
@@ -25,13 +33,9 @@ class ApplicationPolicyTest {
     ) {
 
         if (allowed) {
-
             ApplicationStatus result = policy.move(from, to);
-
             assertEquals(to, result);
-
         } else {
-
             assertThrows(
                     IllegalStateException.class,
                     () -> policy.move(from, to)
@@ -41,7 +45,6 @@ class ApplicationPolicyTest {
 
     @Test
     void nullIdMustThrow() {
-
         assertThrows(
                 IllegalArgumentException.class,
                 () -> new ApplicationId(null)
@@ -51,7 +54,6 @@ class ApplicationPolicyTest {
     @ParameterizedTest
     @ValueSource(strings = {"", " ", "   "})
     void blankIdMustThrow(String value) {
-
         assertThrows(
                 IllegalArgumentException.class,
                 () -> new ApplicationId(value)

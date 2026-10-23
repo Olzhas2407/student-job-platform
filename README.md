@@ -1,10 +1,10 @@
 # Product
 
-We build a student job application management system.
+We build a Student Jobs application tracking system.
 
 # Core item
 
-People track student job applications.
+People track an Application from draft to approval.
 
 # Status table
 
@@ -15,8 +15,27 @@ People track student job applications.
 | DRAFT | APPROVED | Forbidden |
 | APPROVED | DRAFT | Forbidden |
 
-# Forbidden — why
+# Forbidden - why
 
 DRAFT → APPROVED is forbidden because an application must be submitted before it can be approved.
 
-APPROVED → DRAFT is forbidden because an approved application cannot return to draft status.
+APPROVED → DRAFT is forbidden because an approved application cannot return to an editable draft state.
+
+# Package diagram
+
+dto             client           handler          config
+(JSON later)   (HTTP later)    (HTTP week 9)      Application
+ApplicationService
+RuleConfig
+\              \                /                 |
+\              \              /           injects Rule
+\              \            /                  |
+domain
+ApplicationId
+ApplicationStatus
+ApplicationPolicy
+ApplicationRule
+ApplicationTransitionRule
+ApprovedApplicationCannotReturnToDraftRule
+
+                    no Spring imports
