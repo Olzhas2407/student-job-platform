@@ -12,10 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -26,25 +22,18 @@ class ApplicationTransactionTest {
     private JdbcTemplate jdbc;
 
     @Autowired
-    private ApplicationJdbc applications;
+    private ApplicationJpa applications;
 
     @Autowired
     private ApplicationService service;
 
     @BeforeEach
-    void resetDatabase() throws IOException {
-
-        jdbc.execute("DROP TABLE IF EXISTS job_application");
-
-        String schema = Files.readString(
-                Path.of("src/main/resources/db/schema.sql")
-        );
-
-        jdbc.execute(schema);
+    void emptyDatabase() {
+        jdbc.update("DELETE FROM job_application");
     }
 
     @Test
-    void secondStatementRollsBack() {
+    void insertTwiceRollsBackEverything() {
 
         assertThrows(
                 DuplicateApplication.class,
@@ -58,7 +47,7 @@ class ApplicationTransactionTest {
     }
 
     @Test
-    void secondRequestKeepsTheFirst() {
+    void secondRegisterKeepsFirstCommittedRow() {
 
         service.register(
                 ApplicationId.newId(),

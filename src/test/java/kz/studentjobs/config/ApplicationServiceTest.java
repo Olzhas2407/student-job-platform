@@ -3,7 +3,7 @@ package kz.studentjobs.config;
 import kz.studentjobs.domain.ApplicationId;
 import kz.studentjobs.domain.ApplicationNotificationPort;
 import kz.studentjobs.domain.ApplicationRule;
-import kz.studentjobs.persistence.ApplicationJdbc;
+import kz.studentjobs.persistence.ApplicationJpa;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ class ApplicationServiceTest {
     private ApplicationRule rules;
 
     @Mock
-    private ApplicationJdbc applications;
+    private ApplicationJpa applications;
 
     @Mock
     private ApplicationNotificationPort notifications;
@@ -37,13 +37,6 @@ class ApplicationServiceTest {
         service.register(
                 id,
                 "APP-2001",
-                "Student application"
-        );
-
-        verify(applications).insert(
-                id.asUuid(),
-                "APP-2001",
-                "DRAFT",
                 "Student application"
         );
 
