@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import kz.studentjobs.domain.ApplicationNotFound;
 import kz.studentjobs.domain.DuplicateApplication;
-
+import org.springframework.security.core.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,13 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.UUID;
 
-@RestControllerAdvice(assignableTypes = ApplicationController.class)
+@RestControllerAdvice(
+        assignableTypes = {
+                ApplicationController.class,
+                AuthController.class,
+                MeController.class
+        }
+)
 public class ApiExceptionHandler {
 
     private static final Logger log =
@@ -108,7 +114,19 @@ public class ApiExceptionHandler {
                 request
         );
     }
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiError> authentication(
+            AuthenticationException ex,
+            HttpServletRequest request
+    ) {
 
+        return error(
+                HttpStatus.UNAUTHORIZED,
+                "UNAUTHENTICATED",
+                "bad username or password",
+                request
+        );
+    }
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ApiError> unsupported(
             HttpMediaTypeNotSupportedException ex,

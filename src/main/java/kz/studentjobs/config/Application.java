@@ -7,7 +7,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @SpringBootApplication(scanBasePackages = "kz.studentjobs")
 @EntityScan(basePackages = "kz.studentjobs.persistence")
-@EnableConfigurationProperties(DownstreamProperties.class)
+@EnableConfigurationProperties({
+        DownstreamProperties.class,
+        JwtProperties.class
+})
 public class Application {
 
     public static void main(String[] args) {

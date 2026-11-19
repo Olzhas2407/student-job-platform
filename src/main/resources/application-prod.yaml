@@ -8,3 +8,7 @@ app:
   downstream:
     base-url: ${DOWNSTREAM_BASE_URL}
     timeout: ${DOWNSTREAM_TIMEOUT:2s}
+
+    jwt:
+      secret: ${CSS_JWT_SECRET}
+      issuer: student-jobs

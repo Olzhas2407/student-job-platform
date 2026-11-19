@@ -65,4 +65,7 @@ public class ApplicationEntity {
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
+    public void changeStatus(String status) {
+        this.status = status;
+    }
 }
