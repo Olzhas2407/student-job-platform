@@ -12,12 +12,15 @@ import kz.studentjobs.persistence.ApplicationJpa;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.UUID;
 
 @Service
 public class ApplicationService {
-
+    private static final Logger log =
+            LoggerFactory.getLogger(ApplicationService.class);
     private final ApplicationRule rules;
     private final ApplicationJpa applications;
     private final ApplicationNotificationPort notifications;
@@ -113,7 +116,48 @@ public class ApplicationService {
             throw new DuplicateApplication(businessKey);
         }
     }
+    @PreAuthorize("hasRole('MANAGER')")
+    @Transactional
+    public ApplicationDetails submit(
+            UUID id,
+            String actor
+    ) {
 
+        ApplicationEntity entity =
+                applications.findById(id)
+                        .orElseThrow(
+                                () -> new ApplicationNotFound(id)
+                        );
+
+        ApplicationStatus from =
+                ApplicationStatus.valueOf(
+                        entity.getStatus()
+                );
+
+        ApplicationStatus to =
+                ApplicationStatus.SUBMITTED;
+
+        rules.check(from, to);
+
+        entity.changeStatus(
+                to.name()
+        );
+
+        applications.flush();
+
+        log.info(
+                "Application {} submitted by {}",
+                id,
+                actor
+        );
+
+        return new ApplicationDetails(
+                entity.getId(),
+                entity.getBusinessKey(),
+                entity.getStatus(),
+                entity.getTitle()
+        );
+    }
     public int count(String businessKey) {
         return applications.count(businessKey);
     }

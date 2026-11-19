@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Jobs Security</title>
+
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" href="data:,">
+</head>
+
+<body>
+
+<main class="container">
+
+    <section class="hero">
+        <p class="eyebrow">CSS-3008 · Lab 5</p>
+
+        <h1>Student Jobs</h1>
+
+        <p>
+            JWT authentication and role-based access control
+        </p>
+
+        <div class="role-list">
+            <span class="role">RECRUITER</span>
+            <span class="role senior">MANAGER</span>
+        </div>
+    </section>
+
+
+    <section class="card">
+
+        <h2>Dev users</h2>
+
+        <p class="muted">
+            Development profile only
+        </p>
+
+        <div class="users">
+
+            <div>
+                <strong>Junior</strong>
+                <code>recruiter</code>
+            </div>
+
+            <div>
+                <strong>Senior</strong>
+                <code>manager</code>
+            </div>
+
+        </div>
+
+        <p class="muted">
+            Classroom password: <code>student-dev</code>
+        </p>
+
+    </section>
+
+
+    <section class="card" id="login-card">
+
+        <h2>Login</h2>
+
+        <form id="login-form">
+
+            <label>
+                Username
+
+                <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        autocomplete="username"
+                        required
+                >
+            </label>
+
+
+            <label>
+                Password
+
+                <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        autocomplete="current-password"
+                        required
+                >
+            </label>
+
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+        <div
+                id="login-result"
+                class="result hidden"
+        ></div>
+
+    </section>
+
+
+    <section
+            class="card hidden"
+            id="identity-card"
+    >
+
+        <div class="card-heading">
+
+            <div>
+                <h2>Current user</h2>
+
+                <p class="muted">
+                    Information comes from GET /api/me
+                </p>
+            </div>
+
+
+            <button
+                    id="logout-button"
+                    class="secondary"
+                    type="button"
+            >
+                Logout
+            </button>
+
+        </div>
+
+
+        <div class="identity-grid">
+
+            <div>
+                <span class="label">
+                    Username
+                </span>
+
+                <strong id="current-username">
+                    -
+                </strong>
+            </div>
+
+
+            <div>
+                <span class="label">
+                    Role
+                </span>
+
+                <strong id="current-role">
+                    -
+                </strong>
+            </div>
+
+
+            <div>
+                <span class="label">
+                    Token lifetime
+                </span>
+
+                <strong id="token-expiry">
+                    -
+                </strong>
+            </div>
+
+        </div>
+
+        <p class="security-note">
+            The raw JWT is intentionally not displayed.
+        </p>
+
+    </section>
+
+
+    <section class="card">
+
+        <h2>Allowed API call</h2>
+
+        <p>
+            Both RECRUITER and MANAGER may create an application.
+            Without a token this call returns 401.
+        </p>
+
+
+        <button
+                id="create-button"
+                type="button"
+        >
+            Create application
+        </button>
+
+
+        <div
+                id="create-result"
+                class="result hidden"
+        ></div>
+
+    </section>
+
+
+    <section class="card locked">
+
+        <h2>Locked action</h2>
+
+        <p>
+            POST /api/v1/applications/{id}/submit
+        </p>
+
+        <p>
+            RECRUITER → 403<br>
+            MANAGER → success
+        </p>
+
+
+        <div class="application-state">
+
+            <div>
+                <span class="label">
+                    Application ID
+                </span>
+
+                <code id="application-id">
+                    not created yet
+                </code>
+            </div>
+
+
+            <div>
+                <span class="label">
+                    Current status
+                </span>
+
+                <strong id="application-status">
+                    -
+                </strong>
+            </div>
+
+        </div>
+
+
+        <button
+                id="submit-button"
+                type="button"
+        >
+            Submit application
+        </button>
+
+
+        <div
+                id="submit-result"
+                class="result hidden"
+        ></div>
+
+    </section>
+
+
+    <section class="card">
+
+        <h2>Demo path</h2>
+
+        <ol>
+            <li>Try a wrong password → 401.</li>
+            <li>Login as recruiter.</li>
+            <li>Create an application → DRAFT.</li>
+            <li>Submit it as recruiter → 403.</li>
+            <li>Logout.</li>
+            <li>Login as manager.</li>
+            <li>Submit the same application → SUBMITTED.</li>
+            <li>Logout and call Create again → 401.</li>
+        </ol>
+
+    </section>
+
+</main>
+
+
+<script src="/app.js"></script>
+
+</body>
+</html>

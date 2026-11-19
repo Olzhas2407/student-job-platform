@@ -39,3 +39,16 @@ ApplicationTransitionRule
 ApprovedApplicationCannotReturnToDraftRule
 
                     no Spring imports
+
+## Lab 5 Security Rules
+
+| Action                  | RECRUITER | MANAGER | No token |
+|-------------------------|---|---|---|
+| POST /api/v1/auth/login | allowed | allowed | allowed |
+| Create application      | allowed | allowed | 401 |
+| Read application        | allowed | allowed | 401 |
+| Submit application      | 403 | allowed | 401 |
+| GET /api/me             | allowed | allowed | 401 |
+| GET /actuator/health    | allowed | allowed | allowed |
+| Swagger / OpenAPI       | allowed | allowed | allowed |
+| Anything else           | 403 | 403 | 401 |

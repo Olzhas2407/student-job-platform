@@ -12,7 +12,7 @@ import kz.studentjobs.domain.ApplicationId;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.security.core.Authentication;
 import java.net.URI;
 import java.util.UUID;
 
@@ -88,7 +88,41 @@ public class ApplicationController {
                 toResponse(application)
         );
     }
+    @Operation(summary = "Submit application")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Application submitted"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Valid token required"
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Not allowed for your role"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Application not found"
+            )
+    })
+    @PostMapping("/{id}/submit")
+    public ResponseEntity<ApplicationResponse> submit(
+            @PathVariable UUID id,
+            Authentication authentication
+    ) {
 
+        ApplicationDetails updated =
+                service.submit(
+                        id,
+                        authentication.getName()
+                );
+
+        return ResponseEntity.ok(
+                toResponse(updated)
+        );
+    }
     private ApplicationResponse toResponse(
             ApplicationDetails application
     ) {
